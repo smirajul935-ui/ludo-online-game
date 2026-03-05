@@ -1,1 +1,73 @@
+<!DOCTYPE html>
+<html>
 
+<head>
+
+<title>Online Ludo Multiplayer</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+
+</head>
+
+<body>
+
+<h1>Online Ludo</h1>
+
+<button onclick="createRoom()">Create Room</button>
+
+<p id="room"></p>
+
+<input id="roomcode" placeholder="Enter Code">
+
+<button onclick="joinRoom()">Join</button>
+
+<script>
+
+const firebaseConfig = {
+PASTE_FIREBASE_CONFIG
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+function createRoom(){
+
+let code=Math.floor(1000+Math.random()*9000);
+
+db.ref("rooms/"+code).set({
+
+players:1
+
+});
+
+document.getElementById("room").innerHTML="Room Code : "+code;
+
+}
+
+function joinRoom(){
+
+let code=document.getElementById("roomcode").value;
+
+db.ref("rooms/"+code+"/players").once("value",(snap)=>{
+
+let p=snap.val()+1;
+
+db.ref("rooms/"+code).update({
+
+players:p
+
+});
+
+alert("Joined Room "+code);
+
+});
+
+}
+
+</script>
+
+</body>
+
+</html>
